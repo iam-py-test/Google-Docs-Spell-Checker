@@ -79,7 +79,7 @@ chrome.contextMenus.create({"title":"Check for the word \"maybe\"","contexts":["
 chrome.contextMenus.create({"title":"Check your Google Doc for issues","contexts":["browser_action"],"id":"check"}) /*this does not check for a word but will soon run a basic spell check*/ 
 chrome.contextMenus.onClicked.addListener(function(e,tab){
 	//if it is not the item we want
-	if(e.menuItemId === 'check'){return}
+	if(e.menuItemId === 'check' || new URL(tab.url).hostname !== 'docs.google.com'){return}
 	//console.log(e,tab)
 	//get the text of the Google Doc
 	chrome.tabs.executeScript(tab.id,{file:`spellcheck.js`},async function(txt){
