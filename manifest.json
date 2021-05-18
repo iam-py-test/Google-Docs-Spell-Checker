@@ -1,0 +1,13 @@
+{
+"name":"Google Docs spell checker",
+"description":"Adds new spell checking to Google Docs",
+"permissions":["activeTab","storage","tts","contextMenus"],
+"background":{
+"scripts":["back.js"]
+},
+"browser_action":{
+"default_title":"Google Docs spell check"
+},
+"version":"1.0",
+"manifest_version":2
+}
