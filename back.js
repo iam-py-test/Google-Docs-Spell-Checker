@@ -1,5 +1,5 @@
 /*
-
+Old unneeded code
 
 var pause = function(time,word){
 	return new Promise(res => {
@@ -66,23 +66,41 @@ split1;
 		})
 	}
 })*/
+//the new code
+
+//get the original background color
 chrome.browserAction.getBadgeBackgroundColor({},function(r){
 	window.bc = r
 })
-chrome.contextMenus.create({"title":"Check for the word \"like\"","contexts":["browser_action"],"id":"like"})
+//create the menu items
+chrome.contextMenus.create({"title":"Check for the word \"like\"","contexts":["browser_action"],"id":"like"}) /*the id is the word we are looking for*/
 chrome.contextMenus.create({"title":"Check for the word \"thing\"","contexts":["browser_action"],"id":"thing"})
 chrome.contextMenus.create({"title":"Check for the word \"maybe\"","contexts":["browser_action"],"id":"maybe"})
-chrome.contextMenus.create({"title":"Check your Google Doc for issues","contexts":["browser_action"],"id":"check"})
+chrome.contextMenus.create({"title":"Check your Google Doc for issues","contexts":["browser_action"],"id":"check"}) /*this does not check for a word but will soon run a basic spell check*/ 
 chrome.contextMenus.onClicked.addListener(function(e,tab){
-	if(e.menuItemId === 'check'){return}
+	//if it is not the item we want or it is not on docs.google.com 
+	try{
+		
+	if(e.menuItemId === 'check' || new URL(tab.url).hostname !== 'docs.google.com'){return}
+	}
+	catch(err){
+		//if we have an error - log it and return
+		console.log("Error:",err)
+		return;
+	}
 	//console.log(e,tab)
+	//get the text of the Google Doc
 	chrome.tabs.executeScript(tab.id,{file:`spellcheck.js`},async function(txt){
+		//make sure it returned something
 			if(txt[0] !== undefined){
+				//check for the word
 				if(txt[0].toLowerCase().includes(e.menuItemId)){
+					//if we found it
 					chrome.browserAction.setBadgeText({text:"!",tabId:tab.id})
 					chrome.browserAction.setBadgeBackgroundColor({color:"#F00",tabId:tab.id})
 				}
 				else{
+					//if not, reset the icon
 					chrome.browserAction.setBadgeText({text:"Ok",tabId:tab.id})
 					chrome.browserAction.setBadgeBackgroundColor({color:window.bc,tabId:tab.id})
 				}
@@ -91,6 +109,7 @@ chrome.contextMenus.onClicked.addListener(function(e,tab){
 })
 chrome.contextMenus.onClicked.addListener(function(e,tab){
 	if(e.menuItemId!=='check'){return;}
+	//this is still being worked on and is buggy
 		chrome.tabs.executeScript(tab.id,{file:`spellcheck.js`},async function(txt){
 			if(txt[0] !== undefined){
 				var issuewords = new Map([["prinipal","principal"],["i","I"]])
